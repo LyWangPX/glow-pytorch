@@ -140,7 +140,7 @@ def train(args, model, optimizer):
             optimizer.step()
 
             pbar.set_description(
-                f"Loss: {loss.item():.5f}; logP: {log_p.item():.5f}; logdet: {log_det.item():.5f}; lr: {warmup_lr:.7f}"
+                f"i: {i}/{args.iter} type: {args.type} Loss: {loss.item():.5f}; logP: {log_p.item():.5f}; logdet: {log_det.item():.5f}; lr: {warmup_lr:.7f}"
             )
             # i=1 for debug
             if i % 100 == 0 or i == 1:
