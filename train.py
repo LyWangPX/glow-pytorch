@@ -1,7 +1,7 @@
 from tqdm import tqdm
 import numpy as np
 from PIL import Image
-from math import log, sqrt, pi
+from math import log, sqrt, pi, isnan
 
 import argparse
 
@@ -41,8 +41,7 @@ parser.add_argument("path", metavar="PATH", type=str, help="Path to image direct
 def sample_data(path, batch_size, image_size):
     transform = transforms.Compose(
         [
-            transforms.Resize(image_size),
-            transforms.CenterCrop(image_size),
+            transforms.RandomCrop(image_size),
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
         ]
@@ -129,6 +128,9 @@ def train(args, model, optimizer):
             logdet = logdet.mean()
 
             loss, log_p, log_det = calc_loss(log_p, logdet, args.img_size, n_bins)
+            if isnan(loss) or isnan(log_p) or isnan(log_det):
+                print('loss or log_p or log_det is nan. STOP')
+                return
             model.zero_grad()
             loss.backward()
             # warmup_lr = args.lr * min(1, i * batch_size / (50000 * 10))
