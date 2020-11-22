@@ -143,11 +143,12 @@ def train(args, model, optimizer):
                 f"Loss: {loss.item():.5f}; logP: {log_p.item():.5f}; logdet: {log_det.item():.5f}; lr: {warmup_lr:.7f}"
             )
             # i=1 for debug
-            if i % 100 == 0:
+            if i % 100 == 0 or i == 1:
+                datestr = str(datetime.now())
                 with torch.no_grad():
                     utils.save_image(
                         model_single.reverse(z_sample).cpu().data,
-                        f"sample/{str(i + 1).zfill(6)}.png",
+                        f"sample/{str(i + 1).zfill(6)}{args.type}{datestr}.png",
                         normalize=True,
                         nrow=10,
                         range=(-0.5, 0.5),
