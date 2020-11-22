@@ -10,10 +10,10 @@ from torch import nn, optim
 from torch.autograd import Variable, grad
 from torch.utils.data import DataLoader
 from torchvision import datasets, transforms, utils
-
+from datetime import datetime
 from model import Glow
 
-device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 parser = argparse.ArgumentParser(description="Glow trainer")
 parser.add_argument("--batch", default=16, type=int, help="batch size")
@@ -34,6 +34,7 @@ parser.add_argument("--n_bits", default=5, type=int, help="number of bits")
 parser.add_argument("--lr", default=1e-4, type=float, help="learning rate")
 parser.add_argument("--img_size", default=64, type=int, help="image size")
 parser.add_argument("--temp", default=0.7, type=float, help="temperature of sampling")
+parser.add_argument("--type", type=str, help="train type")
 parser.add_argument("--n_sample", default=20, type=int, help="number of samples")
 parser.add_argument("path", metavar="PATH", type=str, help="Path to image directory")
 
@@ -116,7 +117,7 @@ def train(args, model, optimizer):
 
             if i == 0:
                 with torch.no_grad():
-                    log_p, logdet, _ = model.module(
+                    log_p, logdet, _ = model(
                         image + torch.rand_like(image) / n_bins
                     )
 
@@ -141,7 +142,7 @@ def train(args, model, optimizer):
             pbar.set_description(
                 f"Loss: {loss.item():.5f}; logP: {log_p.item():.5f}; logdet: {log_det.item():.5f}; lr: {warmup_lr:.7f}"
             )
-
+            # i=1 for debug
             if i % 100 == 0:
                 with torch.no_grad():
                     utils.save_image(
@@ -153,11 +154,12 @@ def train(args, model, optimizer):
                     )
 
             if i % 10000 == 0:
+                datestr = str(datetime.now())
                 torch.save(
-                    model.state_dict(), f"checkpoint/model_{str(i + 1).zfill(6)}.pt"
+                    model.state_dict(), f"checkpoint/model_{str(i + 1).zfill(6)}{args.type}{datestr}.pt"
                 )
                 torch.save(
-                    optimizer.state_dict(), f"checkpoint/optim_{str(i + 1).zfill(6)}.pt"
+                    optimizer.state_dict(), f"checkpoint/optim_{str(i + 1).zfill(6)}{args.type}{datestr }.pt"
                 )
 
 

@@ -97,10 +97,10 @@ class InvConv2dLU(nn.Module):
         u_mask = np.triu(np.ones_like(w_u), 1)
         l_mask = u_mask.T
 
-        w_p = torch.from_numpy(w_p)
-        w_l = torch.from_numpy(w_l)
-        w_s = torch.from_numpy(w_s)
-        w_u = torch.from_numpy(w_u)
+        w_p = torch.from_numpy(w_p.copy())
+        w_l = torch.from_numpy(w_l.copy())
+        w_s = torch.from_numpy(w_s.copy())
+        w_u = torch.from_numpy(w_u.copy())
 
         self.register_buffer("w_p", w_p)
         self.register_buffer("u_mask", torch.from_numpy(u_mask))
