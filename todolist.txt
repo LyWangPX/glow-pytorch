@@ -1,0 +1,5 @@
+1. finish training
+2. change train.py to load weight then make new samples
+2.5 download weights and destroy the instance(or not)
+3. understand the restoration of picture using normalizing flows
+4. Implement and run
