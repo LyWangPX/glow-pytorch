@@ -2,7 +2,7 @@ from tqdm import tqdm
 import numpy as np
 from PIL import Image
 from math import log, sqrt, pi, isnan
-
+import subprocess
 import argparse
 
 import torch
@@ -153,6 +153,7 @@ def train(args, model, optimizer):
                         nrow=10,
                         range=(-0.5, 0.5),
                     )
+#                     subprocess.run(["scp", f"sample/{str(i + 1).zfill(6)}{args.type}{datestr}.png", "root@139.162.87.43:/glow-pytorch/sample/"])
 
             if i % 10000 == 0:
                 datestr = str(datetime.now())
@@ -162,6 +163,8 @@ def train(args, model, optimizer):
                 torch.save(
                     optimizer.state_dict(), f"checkpoint/optim_{str(i + 1).zfill(6)}{args.type}{datestr }.pt"
                 )
+#                 subprocess.run(["scp", f"checkpoint/model_{str(i + 1).zfill(6)}{args.type}{datestr}.pt", "root@139.162.87.43:/glow-pytorch/checkpoint/"])
+#                 subprocess.run(["scp", f"checkpoint/optim_{str(i + 1).zfill(6)}{args.type}{datestr}.pt", "root@139.162.87.43:/glow-pytorch/checkpoint/"])
 
 
 if __name__ == "__main__":
